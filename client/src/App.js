@@ -1,24 +1,20 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import Navbar from './components/Navbar'; // Import the Navbar component
+import AdminHomePage from './components/AdminHomePage'; // Import the AdminHomePage component
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div>
+        <Navbar />
+        <Switch>
+          <Route exact path="/" component={AdminHomePage} />
+          {/* <Route path="/create-election" component={CreateElectionPage} />
+          <Route path="/view-election" component={ViewElectionPage} /> */}
+        </Switch>
+      </div>
+    </Router>
   );
 }
 
