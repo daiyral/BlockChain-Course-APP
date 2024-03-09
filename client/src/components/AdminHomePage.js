@@ -2,71 +2,54 @@ import React, { useState, useEffect } from 'react';
 import Election from '../contracts/Election.json';
 import getWeb3 from '../getWeb3';
 import '../styling/AdminHomePage.css'; // Import the CSS file for styling
-function AdminHomePage() {
-  const [adminName, setAdminName] = useState('');
-  const [electionName, setElectionName] = useState('');
-  const [electionStatus, setElectionStatus] = useState(false);
-  const [web3, setWeb3] = useState(null);
-  const [contractInstance, setContractInstance] = useState(null);
+function AdminHomePage({AccountNum, web3, contractInstance}) {
+
+  const [electionStats, setElectionStats] = useState({
+    electionStatus: false,
+    electionName: '',
+    totalCandidates: 0,
+    totalVoters: 0,
+  });
+  const getElectionStats = async () => {
+    try {
+      const isOngoing = await contractInstance.methods.getElectionStatus().call();
+      const { adminName, electionName } = await contractInstance.methods.getElectionDetails().call();
+      const totalCandidates = await contractInstance.methods.getTotalCandidate().call();
+      const totalVoters = await contractInstance.methods.getTotalVoter().call();
+      setElectionStats({
+        electionName,
+        electionStatus: isOngoing,
+        totalCandidates,
+        totalVoters,
+      });
+    } catch (error) {
+      console.error('Error getting election stats', error);
+    }
+  }
 
   useEffect(() => {
-    async function initWeb3() {
-      try {
-        // Get network provider and web3 instance.
-        const web3 = await getWeb3();
-        
-        // Use web3 to get the user's accounts.
-        const accounts = await web3.eth.getAccounts();
-
-        // Get the contract instance.
-        const networkId = await web3.eth.net.getId();
-        const deployedNetwork = Election.networks[networkId];
-        const instance = new web3.eth.Contract(
-          Election.abi,
-          deployedNetwork && deployedNetwork.address,
-        );
-
-        setWeb3(web3);
-        setContractInstance(instance);
-      } catch (error) {
-        console.error('Error initializing web3', error);
-      }
-    }
-
-    initWeb3();
-  }, []);
-
-  useEffect(() => {
-    async function loadElectionDetails() {
-      if (contractInstance) {
-        try {
-          const adminName = ''; // Fetch admin name from the contract
-          const electionName = ''; // Fetch election name from the contract
-          const electionStatus = ''; // Fetch election status from the contract
-
-          setAdminName(adminName);
-          setElectionName(electionName);
-          setElectionStatus(electionStatus);
-        } catch (error) {
-          console.error('Error loading election details', error);
-        }
-      }
-    }
-
-    loadElectionDetails();
-  }, [contractInstance]);
+    if (!contractInstance) return;
+    getElectionStats();
+  }
+  , [contractInstance]);
 
 
 
   return (
     <div className="admin-homepage-container">
       <h1>Admin Home Page</h1>
-      <div className="election-details-container">
-        <h2>Election Details</h2>
-        <p><strong>Admin Name:</strong> {adminName}</p>
-        <p><strong>Election Name:</strong> {electionName}</p>
-        <p><strong>Election Status:</strong> {electionStatus ? 'Ongoing' : 'Not ongoing'}</p>
-      </div>
+      {electionStats.electionStatus? (
+        <div>
+          <h2>Election Name: {electionStats.electionName}</h2>
+          <h2>Total Candidates: {electionStats.totalCandidates}</h2>
+          <h2>Total Voters: {electionStats.totalVoters}</h2>
+        </div>
+      ) : (
+        <div>
+          <h2>No election ongoing</h2>
+          <button>Start Election</button>
+        </div>
+      )}
     </div>
   );
 }
