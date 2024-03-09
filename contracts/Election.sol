@@ -152,12 +152,12 @@ contract Election {
 
     // Vote
     function vote(uint256 candidateId) public {
-        //require(voterDetails[msg.sender].hasVoted == false);
+        require(voterDetails[msg.sender].hasVoted == false);
         require(voterDetails[msg.sender].isVerified == true);
         require(start == true);
         require(end == false);
         candidateDetails[candidateId].voteCount += 1;
-        //voterDetails[msg.sender].hasVoted = true;
+        voterDetails[msg.sender].hasVoted = true;
     }
 
     // End election
