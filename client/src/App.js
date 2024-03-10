@@ -4,11 +4,12 @@ import getWeb3 from './getWeb3';
 import Election from './contracts/Election.json';
 import Navbar from './components/Navbar'; 
 import AdminHomePage from './components/AdminHomePage';
-
+import ClipLoader from "react-spinners/ClipLoader";
 function App() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [web3, setWeb3] = useState(null);
   const [contractInstance, setContractInstance] = useState(null); 
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function initWeb3() {
@@ -21,12 +22,7 @@ function App() {
     
         // Get the contract instance.
         const networkId = await web3.eth.net.getId();
-        console.log('Network ID:', networkId); // Log the network ID
-        console.log('Election:', Election); // Log the Election object
-    
         const deployedNetwork = Election.networks[networkId];
-        console.log('Deployed network:', deployedNetwork); // Log the deployed network object
-    
         if (deployedNetwork && deployedNetwork.address) {
           const instance = new web3.eth.Contract(
             Election.abi,
@@ -35,7 +31,8 @@ function App() {
           setWeb3(web3);
           setContractInstance(instance);
           const admin = await instance.methods.getAdmin().call();
-          setIsAdmin(admin === accounts[0]);
+          setIsAdmin(admin.toString() === accounts[0].toString());
+          setLoading(false);
         } else {
           console.error('Contract not deployed to the current network');
         }
@@ -47,6 +44,18 @@ function App() {
 
     initWeb3();
   }, []);
+
+  if (loading){
+    return <div >
+      <ClipLoader
+      loading={loading}
+      size={30}
+      color={"#123abc"}
+      aria-label="Loading Spinner"
+      data-testid="loader"
+    />
+  </div>
+  }
 
 
   return (
