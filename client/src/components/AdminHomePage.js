@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import Election from '../contracts/Election.json';
-import getWeb3 from '../getWeb3';
+import RegisterElection from './RegisterElection';
 import '../styling/AdminHomePage.css'; // Import the CSS file for styling
 function AdminHomePage({AccountNum, web3, contractInstance}) {
-
+  const [showForm, setShowForm] = useState(false);
   const [electionStats, setElectionStats] = useState({
     electionStatus: false,
     electionName: '',
@@ -47,7 +46,8 @@ function AdminHomePage({AccountNum, web3, contractInstance}) {
       ) : (
         <div>
           <h2>No election ongoing</h2>
-          <button>Start Election</button>
+          <button onClick={() => setShowForm(true)}>Start Election</button>
+          {showForm && <RegisterElection contractInstance={contractInstance} />}
         </div>
       )}
     </div>
