@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import RegisterElection from './RegisterElection';
-import '../styling/AdminHomePage.css'; // Import the CSS file for styling
+import '../styling/AdminHomePage.css';
+import { Button } from '@fluentui/react-components';
 function AdminHomePage({AccountNum, web3, contractInstance}) {
   const [showForm, setShowForm] = useState(false);
   const [electionStats, setElectionStats] = useState({
@@ -46,7 +47,7 @@ function AdminHomePage({AccountNum, web3, contractInstance}) {
       ) : (
         <div>
           <h2>No election ongoing</h2>
-          <button onClick={() => setShowForm(true)}>Start Election</button>
+          <Button appearance='primary' onClick={() => setShowForm(true)}>Start Election</Button>
           {showForm && <RegisterElection contractInstance={contractInstance} />}
         </div>
       )}

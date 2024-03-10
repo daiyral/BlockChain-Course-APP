@@ -56,14 +56,12 @@ const RegisterElection = (contractInstance) => {
                             placeholder="Candidate Header"
                             {...register(`candidates.${index}.header`, { required: true })}
                         />
-                        {errors.candidates?.[index]?.header && <span>This field is required</span>}
                         <input
                             className="form-input"
                             type="text"
                             placeholder="Candidate Slogan"
                             {...register(`candidates.${index}.slogan`, { required: true })}
                         />
-                        {errors.candidates?.[index]?.slogan && <span>This field is required</span>}
                         <button type="button" className='add-candidate-button' onClick={() => append({ header: "", slogan: "" })}>Add Candidate</button>
                         <button type="button" className = "remove-candidate-button" onClick={() => remove(index)}>Remove Candidate</button>
 
