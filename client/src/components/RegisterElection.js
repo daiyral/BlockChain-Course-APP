@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import '../styling/RegisterElection.css';
 
-const RegisterElection = (contractInstance) => {
+const RegisterElection = ({contractInstance, account}) => {
     const {
         handleSubmit,
         register,
@@ -14,15 +14,17 @@ const RegisterElection = (contractInstance) => {
         }
       });
 
+
+
     const { fields, append, remove } = useFieldArray({
         control,
         name: "candidates"
     });
 
     const onSubmit = async (data) => {
-        await contractInstance.methods.registerElection(data.electionName, data.adminName).send({from: contractInstance.options.from});
+        await contractInstance.methods.setElectionDetails(data.electionName, data.adminName).send({from: account, gas : 1000000});
         data.candidates.forEach(async candidate => {
-            await contractInstance.methods.addCandidate(candidate.header, candidate.slogan).send({from: contractInstance.options.from});
+            await contractInstance.methods.addCandidate(candidate.header, candidate.slogan).send({from: account, gas : 1000000});
         });
     };
 
@@ -63,7 +65,7 @@ const RegisterElection = (contractInstance) => {
                             {...register(`candidates.${index}.slogan`, { required: true })}
                         />
                         <button type="button" className='add-candidate-button' onClick={() => append({ header: "", slogan: "" })}>Add Candidate</button>
-                        <button type="button" className = "remove-candidate-button" onClick={() => remove(index)}>Remove Candidate</button>
+                        <button type="button" className = "remove-candidate-button" onClick={() => remove(index)} disabled ={fields.length === 1}>Remove Candidate</button>
 
                     </div>
                 ))}

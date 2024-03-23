@@ -9,6 +9,7 @@ function App() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [web3, setWeb3] = useState(null);
   const [contractInstance, setContractInstance] = useState(null); 
+  const [accounts, setAccounts] = useState([null]); // [0] is the current account
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -19,6 +20,8 @@ function App() {
         
         // Use web3 to get the user's accounts.
         const accounts = await web3.eth.getAccounts();
+
+        setAccounts(accounts);
     
         // Get the contract instance.
         const networkId = await web3.eth.net.getId();
@@ -64,8 +67,8 @@ function App() {
         <Navbar />
         <Switch>
           <Route exact path="/" render={() => (
-            isAdmin ? <AdminHomePage 
-                      AccountNum={"0x0"}
+            true ? <AdminHomePage 
+                      account = {accounts[0]}
                       web3={web3}
                       contractInstance={contractInstance}
                       /> 

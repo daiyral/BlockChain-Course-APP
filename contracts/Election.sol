@@ -137,4 +137,17 @@ contract Election {
         return isOngoing;
     }
 
+    function deleteElection() public onlyAdmin {
+        if (!isOngoing) {
+        revert("No ongoing election to delete.");
+    }
+        candidateCount = 0;
+        voterCount = 0;
+        isOngoing = false;
+
+        for (uint i = 0; i < candidateCount; i++) {
+            delete candidateDetails[i];
+        }
+    }
+
 }
