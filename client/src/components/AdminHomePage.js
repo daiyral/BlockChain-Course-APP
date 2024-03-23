@@ -85,9 +85,11 @@ function AdminHomePage({account, web3, contractInstance}) {
           <h2>Total Candidates: {electionStats.totalCandidates}</h2>
           <h2>Total Voters: {electionStats.totalVoters}</h2>
           {candidates.map(candidate => (
-            <CandidateCard key={candidate.id} candidate={candidate} />
+            <div style= {{marginBottom:'5px'}}>
+              <CandidateCard key={candidate.id} candidate={candidate} />
+            </div>
           ))}
-            <Button appearance='primary' onClick={deleteElection}   style={{ backgroundColor: 'red', marginTop: '20px' }} >End Election</Button> 
+            <Button appearance='primary' onClick={deleteElection}   style={{ backgroundColor: 'red', marginTop: '10px' }} >End Election</Button> 
         </div>
       ) : (
         <div className='center-class'>
