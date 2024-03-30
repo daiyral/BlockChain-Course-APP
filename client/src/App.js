@@ -5,6 +5,8 @@ import Election from './contracts/Election.json';
 import Navbar from './components/Navbar'; 
 import HomePage from './components/HomePage';
 import ResultsPage from './components/ResultsPage';
+import UserRegistrationComponent from './components/UserRegistrationComponent';
+import AdminApprovalComponent from './components/AdminApprovalComponent';
 import ClipLoader from "react-spinners/ClipLoader";
 import './App.css';
 function App() {
@@ -13,6 +15,7 @@ function App() {
   const [contractInstance, setContractInstance] = useState(null); 
   const [accounts, setAccounts] = useState([null]); // [0] is the current account
   const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
     async function initWeb3() {
@@ -50,6 +53,7 @@ function App() {
     initWeb3();
   }, []);
 
+
   if (loading){
     return <div >
       <ClipLoader
@@ -80,6 +84,13 @@ function App() {
             <Route path="/Results" render={() => (
               <ResultsPage contractInstance={contractInstance}/>
             )} />
+            <Route exact path="/Registration">
+            {isAdmin ? (
+              <AdminApprovalComponent contractInstance={contractInstance} account={accounts[0]} />
+            ) : (
+              <UserRegistrationComponent contractInstance={contractInstance} account={accounts[0]} />
+            )}
+          </Route>
           </div>
         </Switch>
       </div>
