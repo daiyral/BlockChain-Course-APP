@@ -3,14 +3,19 @@ import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-d
 import getWeb3 from './getWeb3'; 
 import Election from './contracts/Election.json';
 import Navbar from './components/Navbar'; 
-import AdminHomePage from './components/AdminHomePage';
+import HomePage from './components/HomePage';
+import ResultsPage from './components/ResultsPage';
+import UserRegistrationComponent from './components/UserRegistrationComponent';
+import AdminApprovalComponent from './components/AdminApprovalComponent';
 import ClipLoader from "react-spinners/ClipLoader";
+import './App.css';
 function App() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [web3, setWeb3] = useState(null);
   const [contractInstance, setContractInstance] = useState(null); 
   const [accounts, setAccounts] = useState([null]); // [0] is the current account
   const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
     async function initWeb3() {
@@ -48,6 +53,7 @@ function App() {
     initWeb3();
   }, []);
 
+
   if (loading){
     return <div >
       <ClipLoader
@@ -66,17 +72,26 @@ function App() {
       <div>
         <Navbar />
         <Switch>
-          <Route exact path="/" render={() => (
-            true ? <AdminHomePage 
+          <div className="container-base">
+            <Route exact path="/" render={() => (
+                <HomePage
+                      isAdmin={isAdmin}
                       account = {accounts[0]}
                       web3={web3}
                       contractInstance={contractInstance}
-                      /> 
-                      : 
-                      <Redirect to="/Voter" />
-          )} />
-          {/* <Route path="/create-election" component={CreateElectionPage} />
-          <Route path="/view-election" component={ViewElectionPage} /> */}
+                  /> 
+            )} />
+            <Route path="/Results" render={() => (
+              <ResultsPage contractInstance={contractInstance}/>
+            )} />
+            <Route exact path="/Registration">
+            {isAdmin ? (
+              <AdminApprovalComponent contractInstance={contractInstance} account={accounts[0]} />
+            ) : (
+              <UserRegistrationComponent contractInstance={contractInstance} account={accounts[0]} />
+            )}
+          </Route>
+          </div>
         </Switch>
       </div>
     </Router>

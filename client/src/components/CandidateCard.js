@@ -10,12 +10,8 @@ import {
   } from "@fluentui/react-components";
 import { Card, CardHeader, CardPreview } from "@fluentui/react-components";
 import { MoreHorizontal20Regular } from "@fluentui/react-icons";
-const resolveAsset = (asset) => {
-    const ASSET_URL =
-      "https://raw.githubusercontent.com/microsoft/fluentui/master/packages/react-components/react-card/stories/assets/";
-  
-    return `${ASSET_URL}${asset}`;
-  };
+import candidateImage from '../images/stock_candidate.jpg';
+
 const useStyles = makeStyles({
     main: {
       ...shorthands.gap("36px"),
@@ -65,7 +61,7 @@ const styles = useStyles();
           <CardPreview className={styles.horizontalCardImage}>
             <img
               className={styles.horizontalCardImage}
-              src={resolveAsset("app_logo.svg")}
+              src={candidateImage}
               alt="App Name Document"
             />
           </CardPreview>
