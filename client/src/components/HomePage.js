@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import RegisterElection from './RegisterElection';
-import '../styling/AdminHomePage.css';
+import '../styling/HomePage.css';
 import { Button } from '@fluentui/react-components';
 import CandidateCard from './CandidateCard'; 
 
-function AdminHomePage({account, web3, contractInstance}) {
+function HomePage({isAdmin, account, web3, contractInstance}) {
   const [showForm, setShowForm] = useState(false);
   const [isElectionOngoing, setIsElectionOngoing] = useState(false); 
   const [electionStats, setElectionStats] = useState({
@@ -75,31 +75,42 @@ function AdminHomePage({account, web3, contractInstance}) {
     window.location.reload();
   }
 
+  const title = isAdmin? `Admin Home Page` : `User Home Page`;
 
   return (
-    <div className="admin-homepage-container">
-      <h1>Admin Home Page</h1>
-      {isElectionOngoing? (
-        <div>
-          <h2>Election Name: {electionStats.electionName}</h2>
-          <h2>Total Candidates: {electionStats.totalCandidates}</h2>
-          <h2>Total Voters: {electionStats.totalVoters}</h2>
-          {candidates.map(candidate => (
-            <div style= {{marginBottom:'5px'}}>
-              <CandidateCard key={candidate.id} candidate={candidate} />
+    <div>
+        <h1>{title}</h1>
+        {isElectionOngoing ? (
+            <div>
+                <h2>Election Name: {electionStats.electionName}</h2>
+                <h2>Total Candidates: {electionStats.totalCandidates}</h2>
+                <h2>Total Voters: {electionStats.totalVoters}</h2>
+                {candidates.map(candidate => (
+                    <div style={{ marginBottom: '5px' }}>
+                        <CandidateCard key={candidate.id} candidate={candidate} />
+                    </div>
+                ))}
+                <div style={{justifyContent:'space-evenly', display: 'flex'}}>
+                {isAdmin && <Button appearance='primary' onClick={deleteElection} style={{ backgroundColor: 'blue', marginTop: '10px' }}>End Election</Button>}
+                {isAdmin && <Button appearance='primary' onClick={deleteElection} style={{ backgroundColor: 'red', marginTop: '10px' }}>Delete Election</Button>}
+                </div>
             </div>
-          ))}
-            <Button appearance='primary' onClick={deleteElection}   style={{ backgroundColor: 'red', marginTop: '10px' }} >End Election</Button> 
-        </div>
-      ) : (
-        <div className='center-class'>
-          <h2>No election ongoing</h2>
-          <Button appearance='primary' onClick={() => setShowForm(true)}>Start Election</Button>
-          {showForm && <RegisterElection contractInstance={contractInstance} account = {account} onRegister = {handleRegister} />}
-        </div>
-      )}
+        ) : (
+            isAdmin ? (
+                <div className='center-class'>
+                    <h2>No election ongoing</h2>
+                    <Button appearance='primary' onClick={() => setShowForm(true)}>Start Election</Button>
+                    {showForm && <RegisterElection contractInstance={contractInstance} account={account} onRegister={handleRegister} />}
+                </div>
+            ) : (
+                <div className='center-class'>
+                    <h2>No election ongoing</h2>
+                    <p>Check back later for an ongoing election</p>
+                </div>
+            )
+        )}
     </div>
-  );
+);
 }
 
-export default AdminHomePage;
+export default HomePage;
