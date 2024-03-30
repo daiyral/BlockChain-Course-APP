@@ -54,9 +54,11 @@ function AdminVerifyVotersComponent({ contractInstance, account }) {
 
   return (
     <div>
-      <h2>Admin Verify Voters Component</h2>
+      <h2>Verify Users Page</h2>
       {loading ? (
         <p>Loading...</p>
+      ) : voters.length === 0 ? (
+        <p>No users to verify.</p>
       ) : (
         <ul>
           {voters.map(voter => (

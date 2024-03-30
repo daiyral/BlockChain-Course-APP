@@ -7,6 +7,7 @@ import CandidateCard from './CandidateCard';
 function HomePage({isAdmin, account, web3, contractInstance}) {
   const [showForm, setShowForm] = useState(false);
   const [isElectionOngoing, setIsElectionOngoing] = useState(false); 
+  const [voter, setVoter] = useState({isVerified: false}); 
   const [electionStats, setElectionStats] = useState({
     electionStatus: false,
     electionName: '',
@@ -68,11 +69,30 @@ function HomePage({isAdmin, account, web3, contractInstance}) {
   useEffect(() => {
     setIsElectionOngoing(electionStats.electionStatus);
   }, [electionStats.electionStatus]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const currVoter = await contractInstance.methods.voterDetails(account).call()
+      setVoter(currVoter);
+    }
     
+    fetchData();
+  
+  }, []);
+  
 
   const handleRegister = async () => {
     await getElectionStats();
     window.location.reload();
+  }
+
+  const handleVote = async (candidateId) => {
+    try {
+      await contractInstance.methods.vote(candidateId).send({ from: account });
+      setVoter({ ...voter, hasVoted: true })
+    } catch (error) {
+      console.error('Error voting', error);
+    }
   }
 
   const title = isAdmin? `Admin Home Page` : `User Home Page`;
@@ -80,37 +100,53 @@ function HomePage({isAdmin, account, web3, contractInstance}) {
   return (
     <div>
         <h1>{title}</h1>
-        {isElectionOngoing ? (
-            <div>
-                <h2>Election Name: {electionStats.electionName}</h2>
-                <h2>Total Candidates: {electionStats.totalCandidates}</h2>
-                <h2>Total Voters: {electionStats.totalVoters}</h2>
-                {candidates.map(candidate => (
-                    <div style={{ marginBottom: '5px' }}>
-                        <CandidateCard key={candidate.id} candidate={candidate} />
+        {isAdmin || (voter.isVerified && voter.isRegistered) ? (
+            isElectionOngoing ? (
+                <div>
+                    <h2>Election Name: {electionStats.electionName}</h2>
+                    <h2>Total Candidates: {electionStats.totalCandidates}</h2>
+                    <h2>Total Voters Registered: {electionStats.totalVoters}</h2>
+                    {candidates.map(candidate => (
+                        <div style={{ marginBottom: '5px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'start' }}>
+                              <CandidateCard key={candidate.id} candidate={candidate} />
+                              {!isAdmin && <Button appearance='primary' onClick={() => handleVote(candidate.id)} style={{marginLeft: '10px', backgroundColor: 'green' }}>Vote</Button>}
+                            </div>
+                        </div>
+                    ))}
+                    <div style={{justifyContent:'space-evenly', display: 'flex'}}>
+                    {isAdmin && <Button appearance='primary' onClick={deleteElection} style={{ backgroundColor: 'blue', marginTop: '10px' }}>End Election</Button>}
+                    {isAdmin && <Button appearance='primary' onClick={deleteElection} style={{ backgroundColor: 'red', marginTop: '10px' }}>Delete Election</Button>}
                     </div>
-                ))}
-                <div style={{justifyContent:'space-evenly', display: 'flex'}}>
-                {isAdmin && <Button appearance='primary' onClick={deleteElection} style={{ backgroundColor: 'blue', marginTop: '10px' }}>End Election</Button>}
-                {isAdmin && <Button appearance='primary' onClick={deleteElection} style={{ backgroundColor: 'red', marginTop: '10px' }}>Delete Election</Button>}
                 </div>
-            </div>
+            ) : (
+                isAdmin ? (
+                    <div className='center-class'>
+                        <h2>No election ongoing</h2>
+                        <Button appearance='primary' onClick={() => setShowForm(true)}>Start Election</Button>
+                        {showForm && <RegisterElection contractInstance={contractInstance} account={account} onRegister={handleRegister} />}
+                    </div>
+                ) : (
+                    <div className='center-class'>
+                        <h2>No election ongoing</h2>
+                        <p>Check back later for an ongoing election</p>
+                    </div>
+                )
+            )
         ) : (
-            isAdmin ? (
+            voter.isRegistered ? (
                 <div className='center-class'>
-                    <h2>No election ongoing</h2>
-                    <Button appearance='primary' onClick={() => setShowForm(true)}>Start Election</Button>
-                    {showForm && <RegisterElection contractInstance={contractInstance} account={account} onRegister={handleRegister} />}
+                    <h2>Your registration is pending approval</h2>
                 </div>
             ) : (
                 <div className='center-class'>
-                    <h2>No election ongoing</h2>
-                    <p>Check back later for an ongoing election</p>
+                    <h2>You must be verified to view the current election</h2>
                 </div>
             )
         )}
     </div>
 );
+
 }
 
 export default HomePage;

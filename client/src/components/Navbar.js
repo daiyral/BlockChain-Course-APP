@@ -19,11 +19,6 @@ export default function Navbar() {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/Voting" activeClassName="nav-active">
-            <i className="fas fa-vote-yea" /> Voting
-          </NavLink>
-        </li>
-        <li>
           <NavLink to="/Results" activeClassName="nav-active">
             <i className="fas fa-poll-h" /> Results
           </NavLink>
