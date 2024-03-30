@@ -4,6 +4,10 @@ import getWeb3 from './getWeb3';
 import Election from './contracts/Election.json';
 import Navbar from './components/Navbar'; 
 import AdminHomePage from './components/AdminHomePage';
+import UserRegistrationComponent from './components/UserRegistrationComponent';
+import AdminApprovalComponent from './components/AdminApprovalComponent';
+
+import VotePage from './components/VotePage';
 import ClipLoader from "react-spinners/ClipLoader";
 function App() {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -11,6 +15,7 @@ function App() {
   const [contractInstance, setContractInstance] = useState(null); 
   const [accounts, setAccounts] = useState([null]); // [0] is the current account
   const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
     async function initWeb3() {
@@ -48,6 +53,7 @@ function App() {
     initWeb3();
   }, []);
 
+
   if (loading){
     return <div >
       <ClipLoader
@@ -75,6 +81,16 @@ function App() {
                       : 
                       <Redirect to="/Voter" />
           )} />
+          <Route path="/Voting" component={VotePage} /> {/* Add this line for the vote page */}
+          {/* <Route path="/Registration" render={() => <UserRegistrationComponent contractInstance={contractInstance} account={accounts[0]} />} /> */}
+          <Route exact path="/Registration">
+            {isAdmin ? (
+              <AdminApprovalComponent contractInstance={contractInstance} account={accounts[0]} />
+            ) : (
+              <UserRegistrationComponent contractInstance={contractInstance} account={accounts[0]} />
+            )}
+          </Route>
+          
           {/* <Route path="/create-election" component={CreateElectionPage} />
           <Route path="/view-election" component={ViewElectionPage} /> */}
         </Switch>
