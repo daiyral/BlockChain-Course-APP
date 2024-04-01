@@ -86,3 +86,9 @@
 .remove-candidate-button:hover {
     background-color: #c82333; /* Darker red color on hover */
 }
+
+.remove-candidate-button:disabled {
+    background-color: #f8d7da; /* Light red color */
+    color: #721c24; /* Dark red color */
+    cursor: not-allowed;
+}

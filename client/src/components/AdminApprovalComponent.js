@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from '@fluentui/react-components'; // Import Button from Fluent UI
+import '../styling/AdminApproval.css';
 
 function AdminVerifyVotersComponent({ contractInstance, account }) {
   const [voters, setVoters] = useState([]);
@@ -34,7 +34,7 @@ function AdminVerifyVotersComponent({ contractInstance, account }) {
 
   const handleVerify = async (voterAddress) => {
     try {
-      await contractInstance.methods.verifyVoter(true, voterAddress).send({ from: account });
+      await contractInstance.methods.verifyVoter(true, voterAddress).send({ from: account }).catch((error) => console.error('Error verifying voter:', error));
       // Refresh the list of voters after verification
       const updatedVoter = await contractInstance.methods.voterDetails(voterAddress).call();
       const updatedVoters = voters.map(voter => {
@@ -53,28 +53,28 @@ function AdminVerifyVotersComponent({ contractInstance, account }) {
   };
 
   return (
-    <div>
-      <h2>Verify Users Page</h2>
+    <div className="verify-users-container">
+      <h1 className="page-title">Verify Users Page</h1>
       {loading ? (
         <p>Loading...</p>
       ) : voters.length === 0 ? (
         <p>No users to verify.</p>
       ) : (
-        <ul>
+        <ul className="user-list">
           {voters.map(voter => (
-            <li key={voter.address}>
+            <li key={voter.address} className="user-item">
               <span>Name: {voter.name}</span>
               <span>Phone: {voter.phone}</span>
               <span>Verified: {voter.isVerified ? 'Yes' : 'No'}</span>
               {!voter.isVerified && (
-                <Button onClick={() => handleVerify(voter.address)}>Verify</Button>
+                <button className="verify-button" onClick={() => handleVerify(voter.address)}>Verify</button>
               )}
             </li>
           ))}
         </ul>
       )}
     </div>
-  );
+  );  
 }
 
 export default AdminVerifyVotersComponent;
