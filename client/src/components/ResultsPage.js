@@ -12,7 +12,7 @@ const ResultsPage = ({ contractInstance }) => {
   });
   const [candidates, setCandidates] = useState([]);
 
-  const getAllCandidates = async (totalCandidates) => {
+  const getAllCandidates = async (totalCandidates, isOngoing) => {
     const candidateList = [];
     for (let i = 1; i <= totalCandidates; i++) {
       const candidate = await contractInstance.methods.candidateDetails(i - 1).call();
@@ -24,13 +24,16 @@ const ResultsPage = ({ contractInstance }) => {
       });
     }
     setCandidates(candidateList);
-    calculateWinner(candidateList);
+    if (!isOngoing) 
+      calculateWinner(candidateList);
   };
 
   const calculateWinner = (candidateList) => {
     if (candidateList.length === 0) return;
 
-    const totalVotes = candidateList.reduce((total, candidate) => total + candidate.voteCount, 0);
+    const totalVotes = parseInt(candidateList.reduce((total, candidate) => total + candidate.voteCount, 0));
+    console.log(totalVotes, 'totalVotes')
+    if (totalVotes === 0) return;
     const winner = candidateList.reduce((prev, current) => (prev.voteCount > current.voteCount ? prev : current));
     let percentage = ((winner.voteCount / totalVotes) * 100).toFixed(2);
 
@@ -47,14 +50,14 @@ const ResultsPage = ({ contractInstance }) => {
       const { electionName } = await contractInstance.methods.getElectionDetails().call();
       const totalCandidates = await contractInstance.methods.getTotalCandidate().call();
       const totalVoters = await contractInstance.methods.getTotalVoter().call();
-      
+      console.log(isOngoing, 'isOngoing') 
       setElectionStats({
         electionName,
         electionStatus: isOngoing,
         totalCandidates,
         totalVoters,
       });
-      await getAllCandidates(totalCandidates);
+      await getAllCandidates(totalCandidates, isOngoing);
     })();
   }, [contractInstance]);
 

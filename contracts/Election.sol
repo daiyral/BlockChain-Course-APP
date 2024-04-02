@@ -61,6 +61,12 @@ contract Election {
         // Only admin can add
         onlyAdmin
     {
+        //delete all previous data
+        for (uint i = 0; i < candidateCount; i++) {
+            delete candidateDetails[i];
+        }
+        candidateCount = 0;
+        voterCount = 0;
         electionDetails = ElectionDetails(
             _adminName,
             _electionName
@@ -141,13 +147,13 @@ contract Election {
         if (!isOngoing) {
         revert("No ongoing election to delete.");
     }
+    for (uint i = 0; i < candidateCount; i++) {
+            delete candidateDetails[i];
+        }
         candidateCount = 0;
         voterCount = 0;
         isOngoing = false;
-
-        for (uint i = 0; i < candidateCount; i++) {
-            delete candidateDetails[i];
-        }
+        delete electionDetails;
     }
 
 }

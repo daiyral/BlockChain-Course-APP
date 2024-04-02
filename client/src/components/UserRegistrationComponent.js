@@ -51,7 +51,7 @@ function UserRegistrationComponent({ contractInstance, account }) {
       await transaction.wait();
       // Clear form fields after successful registration
        setHasRegistered(true);
-      //alert('Registration successful!');
+       alert('Registration successful!');
     } catch (error) {
       //alert('Failed to register. Please try again.');
     }

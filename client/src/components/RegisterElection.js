@@ -22,17 +22,14 @@ const RegisterElection = ({contractInstance, account}) => {
     });
 
     const onSubmit = async (data) => {
-        try{
-            await contractInstance.methods.setElectionDetails(data.adminName, data.electionName).send({from: account, gas : 1000000}).catch((error) => console.error('Error setting election details:', error));
-            await Promise.all(data.candidates.map(async candidate => {
-                await contractInstance.methods.addCandidate(candidate.header, candidate.slogan).send({from: account, gas: 1000000}).catch((error) => console.error('Error adding candidate:', error));
-              }));
-            window.location.reload();
-        }
-        catch (error) {
-            console.error('Error registering election:', error);
-        }
-        
+        let errorFlag = false;
+        await contractInstance.methods.setElectionDetails(data.adminName, data.electionName).send({from: account, gas : 1000000}).catch((error) => {console.log("yep"); errorFlag = true});
+        if(errorFlag) return;
+        await Promise.all(data.candidates.map(async candidate => {
+            await contractInstance.methods.addCandidate(candidate.header, candidate.slogan).send({from: account, gas: 1000000}).catch((error) => errorFlag = true);
+            if (errorFlag) return;
+            }));
+        window.location.reload();
     };
 
     return (

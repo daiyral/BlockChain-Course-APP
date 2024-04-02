@@ -28,6 +28,7 @@ function HomePage({isAdmin, account, web3, contractInstance}) {
           id: i,
           header: candidate.header,
           slogan: candidate.slogan,
+          voteCount: candidate.voteCount
         },
       ]);
     }
@@ -44,6 +45,15 @@ function HomePage({isAdmin, account, web3, contractInstance}) {
   }
 
   const endElection = async () => {
+    // if all votes are 0 dont end election
+    let totalVotes = 0;
+    candidates.forEach(candidate => {
+      totalVotes += parseInt(candidate.voteCount);
+    });
+    if (totalVotes === 0) {
+      alert('No votes have been cast yet. Cannot end election.');
+      return;
+    }
     try {
       await contractInstance.methods.endElection().send({ from: account }).catch((error) => console.error('Error ending election:', error));
       setCandidates([]);
