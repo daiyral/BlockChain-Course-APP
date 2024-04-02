@@ -3,6 +3,7 @@ import RegisterElection from './RegisterElection';
 import '../styling/HomePage.css';
 import { Button } from '@fluentui/react-components';
 import CandidateCard from './CandidateCard'; 
+import ClipLoader from "react-spinners/ClipLoader";
 
 function HomePage({isAdmin, account, web3, contractInstance}) {
   const [showForm, setShowForm] = useState(false);
@@ -15,7 +16,7 @@ function HomePage({isAdmin, account, web3, contractInstance}) {
     totalVoters: 0,
   });
   const [candidates, setCandidates] = useState([]); 
-
+  const [loading, setLoading] = useState(true);
   const getAllCandidates = async (totalCandidates) => {
     for (let i = 1; i <= totalCandidates; i++) {
       const candidate = await contractInstance.methods
@@ -27,6 +28,7 @@ function HomePage({isAdmin, account, web3, contractInstance}) {
           id: i,
           header: candidate.header,
           slogan: candidate.slogan,
+          voteCount: candidate.voteCount
         },
       ]);
     }
@@ -34,7 +36,26 @@ function HomePage({isAdmin, account, web3, contractInstance}) {
 
   const deleteElection = async () => {
     try {
-      await contractInstance.methods.deleteElection().send({ from: account });
+      await contractInstance.methods.deleteElection().send({ from: account }).catch((error) => console.error('Error deleting election:', error));
+      setCandidates([]);
+      await getElectionStats();
+    } catch (error) {
+      console.error('Error ending election', error);
+    }
+  }
+
+  const endElection = async () => {
+    // if all votes are 0 dont end election
+    let totalVotes = 0;
+    candidates.forEach(candidate => {
+      totalVotes += parseInt(candidate.voteCount);
+    });
+    if (totalVotes === 0) {
+      alert('No votes have been cast yet. Cannot end election.');
+      return;
+    }
+    try {
+      await contractInstance.methods.endElection().send({ from: account }).catch((error) => console.error('Error ending election:', error));
       setCandidates([]);
       await getElectionStats();
     } catch (error) {
@@ -58,6 +79,7 @@ function HomePage({isAdmin, account, web3, contractInstance}) {
     } catch (error) {
       console.error('Error getting election stats', error);
     }
+    setLoading(false);
   }
 
   useEffect(() => {
@@ -72,7 +94,7 @@ function HomePage({isAdmin, account, web3, contractInstance}) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const currVoter = await contractInstance.methods.voterDetails(account).call()
+      const currVoter = await contractInstance.methods.voterDetails(account).call().catch((error) => console.error('Error fetching voter details:', error));
       setVoter(currVoter);
     }
     
@@ -88,7 +110,7 @@ function HomePage({isAdmin, account, web3, contractInstance}) {
 
   const handleVote = async (candidateId) => {
     try {
-      await contractInstance.methods.vote(candidateId).send({ from: account });
+      await contractInstance.methods.vote(candidateId).send({ from: account }).catch((error) => console.error('Error voting:', error));
       setVoter({ ...voter, hasVoted: true })
     } catch (error) {
       console.error('Error voting', error);
@@ -96,6 +118,20 @@ function HomePage({isAdmin, account, web3, contractInstance}) {
   }
 
   const title = isAdmin? `Admin Home Page` : `User Home Page`;
+
+  if (loading) {
+    return (
+      <div>
+        <ClipLoader
+          loading={loading}
+          size={30}
+          color={'#123abc'}
+          aria-label="Loading Spinner"
+          data-testid="loader"
+        />
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -110,12 +146,12 @@ function HomePage({isAdmin, account, web3, contractInstance}) {
                         <div style={{ marginBottom: '5px' }}>
                             <div style={{ display: 'flex', justifyContent: 'start' }}>
                               <CandidateCard key={candidate.id} candidate={candidate} />
-                              {!isAdmin && <Button appearance='primary' onClick={() => handleVote(candidate.id)} style={{marginLeft: '10px', backgroundColor: 'green' }}>Vote</Button>}
+                              {!isAdmin && <Button appearance='primary' disabled = {voter?.hasVoted}  onClick={() => handleVote(candidate.id)} style={{marginLeft: '10px', backgroundColor: 'green' }}>Vote</Button>}
                             </div>
                         </div>
                     ))}
                     <div style={{justifyContent:'space-evenly', display: 'flex'}}>
-                    {isAdmin && <Button appearance='primary' onClick={deleteElection} style={{ backgroundColor: 'blue', marginTop: '10px' }}>End Election</Button>}
+                    {isAdmin && <Button appearance='primary' onClick={endElection} style={{ backgroundColor: 'blue', marginTop: '10px' }}>End Election</Button>}
                     {isAdmin && <Button appearance='primary' onClick={deleteElection} style={{ backgroundColor: 'red', marginTop: '10px' }}>Delete Election</Button>}
                     </div>
                 </div>

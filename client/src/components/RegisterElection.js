@@ -22,10 +22,14 @@ const RegisterElection = ({contractInstance, account}) => {
     });
 
     const onSubmit = async (data) => {
-        await contractInstance.methods.setElectionDetails(data.electionName, data.adminName).send({from: account, gas : 1000000});
-        data.candidates.forEach(async candidate => {
-            await contractInstance.methods.addCandidate(candidate.header, candidate.slogan).send({from: account, gas : 1000000});
-        });
+        let errorFlag = false;
+        await contractInstance.methods.setElectionDetails(data.adminName, data.electionName).send({from: account, gas : 1000000}).catch((error) => {console.log("yep"); errorFlag = true});
+        if(errorFlag) return;
+        await Promise.all(data.candidates.map(async candidate => {
+            await contractInstance.methods.addCandidate(candidate.header, candidate.slogan).send({from: account, gas: 1000000}).catch((error) => errorFlag = true);
+            if (errorFlag) return;
+            }));
+        window.location.reload();
     };
 
     return (
