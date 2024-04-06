@@ -22,25 +22,21 @@ function App() {
   useEffect(() => {
     async function initWeb3() {
       try {
+        // Get network provider and web3 instance.
+        //const web3 = await getWeb3();
+        
+        // Use web3 to get the user's accounts.
+        //const accounts = await web3.eth.getAccounts();
 
-        if (config.env.environment === "dev") {
-          // Get network provider and web3 instance.
-          const web3 = await getWeb3();
-          
-          // Use web3 to get the user's accounts.
-          const accounts = await web3.eth.getAccounts();
-        }
-        if (config.env.environment === "staging") {
-          const web3 = new Web3(
-            new Web3.providers.HttpProvider(
-              config.env.API_KEY
-            )
+        const web3 = new Web3(
+          new Web3.providers.HttpProvider(
+            config.env.API_KEY
           )
-          console.log(web3, "web3")
-          const accounts = await window.ethereum.request({
-            method: "eth_requestAccounts",
-          });
-      }
+        )
+        console.log(web3, "web3")
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
         setAccounts(accounts);
     
         // Get the contract instance.
