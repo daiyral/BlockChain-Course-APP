@@ -1,5 +1,7 @@
 # Voting app
-Decentralised voting system based on etherum.
+Decentralised voting system based on etherum. 
+Using metamask, truffle, ganache.
+Contract also deployed on sepolia network. If you have sepolia it can also be used.
 
 ## System Workflow
 - Admin account will create an election with the candidates for the election.
