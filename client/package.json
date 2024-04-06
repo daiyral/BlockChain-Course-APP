@@ -5,6 +5,7 @@
   "private": true,
   "dependencies": {
     "@fluentui/react-components": "^9.46.8",
+    "dotenv": "^16.4.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.0.5",

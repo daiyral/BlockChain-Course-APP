@@ -10,6 +10,7 @@ import UserRegistrationComponent from './components/UserRegistrationComponent';
 import AdminApprovalComponent from './components/AdminApprovalComponent';
 import ClipLoader from "react-spinners/ClipLoader";
 import './App.css';
+import config from './config';
 function App() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [web3, setWeb3] = useState(null);
@@ -21,22 +22,25 @@ function App() {
   useEffect(() => {
     async function initWeb3() {
       try {
-        // Get network provider and web3 instance.
-        //const web3 = await getWeb3();
-        
-        // Use web3 to get the user's accounts.
-        //const accounts = await web3.eth.getAccounts();
 
-        const web3 = new Web3(
-          new Web3.providers.HttpProvider(
-            process.env.API_KEY
+        if (config.env.environment === "dev") {
+          // Get network provider and web3 instance.
+          const web3 = await getWeb3();
+          
+          // Use web3 to get the user's accounts.
+          const accounts = await web3.eth.getAccounts();
+        }
+        if (config.env.environment === "staging") {
+          const web3 = new Web3(
+            new Web3.providers.HttpProvider(
+              config.env.API_KEY
+            )
           )
-        )
-
-        const accounts = await window.ethereum.request({
-          method: "eth_requestAccounts",
-        });
-        console.log(accounts)
+          console.log(web3, "web3")
+          const accounts = await window.ethereum.request({
+            method: "eth_requestAccounts",
+          });
+      }
         setAccounts(accounts);
     
         // Get the contract instance.
@@ -50,7 +54,7 @@ function App() {
           setWeb3(web3);
           setContractInstance(instance);
           const admin = await instance.methods.getAdmin().call();
-          setIsAdmin(admin.toString() === accounts[0].toString());
+          setIsAdmin(admin.toString().toLowerCase() === accounts[0].toString().toLowerCase());
           setLoading(false);
         } else {
           console.error('Contract not deployed to the current network');
