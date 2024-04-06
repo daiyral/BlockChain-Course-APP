@@ -72,3 +72,20 @@ Contract also deployed on sepolia network. If you have sepolia it can also be us
    npm install
    npm start
   ```
+
+### Deploy for sepolia testnet
+
+9. Deploy smart contract to sepolia blockchain (MUST HAVE SEPOLIA ETH)
+    
+  ``` shell
+  truffle migrate --network sepolia.
+```
+  
+11. Deploy to git pages the react client
+    
+   ```shell
+   cd client
+   npm run deploy
+  ```
+
+12. Go to https://daiyral.github.io/BlockChain-Course-APP/
