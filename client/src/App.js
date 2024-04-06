@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import Web3 from 'web3';
 import getWeb3 from './getWeb3'; 
 import Election from './contracts/Election.json';
 import Navbar from './components/Navbar'; 
@@ -21,11 +22,21 @@ function App() {
     async function initWeb3() {
       try {
         // Get network provider and web3 instance.
-        const web3 = await getWeb3();
+        //const web3 = await getWeb3();
         
         // Use web3 to get the user's accounts.
-        const accounts = await web3.eth.getAccounts();
+        //const accounts = await web3.eth.getAccounts();
 
+        const web3 = new Web3(
+          new Web3.providers.HttpProvider(
+            process.env.API_KEY
+          )
+        )
+
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+        console.log(accounts)
         setAccounts(accounts);
     
         // Get the contract instance.

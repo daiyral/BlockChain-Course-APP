@@ -5,7 +5,10 @@ const getWeb3 = () =>
     window.addEventListener("load", async () => {
       // Modern dapp browsers...
       if (window.ethereum) {
-        const web3 = new Web3(window.ethereum);
+        //const web3 = new Web3(window.ethereum);
+        const provider = new Web3.providers.HttpProvider(
+          process.env.API_KEY);
+        const web3 = new Web3(provider);
         try {
           // Request account access if needed
           await window.ethereum.enable();
