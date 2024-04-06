@@ -28,12 +28,20 @@ function App() {
         // Use web3 to get the user's accounts.
         //const accounts = await web3.eth.getAccounts();
 
-        const web3 = new Web3(
-          new Web3.providers.HttpProvider(
-            config.env.API_KEY
-          )
-        )
-        console.log(web3, "web3")
+        let web3;
+        if (window.ethereum) {
+          web3 = new Web3(window.ethereum);
+          window.ethereum.enable();
+        } else if (window.web3) {
+          web3 = new Web3(window.web3.currentProvider);
+        } else {
+          // Set the provider you want from Web3.providers
+          if (config.env.environment === "dev")
+            web3 = new Web3(new Web3.providers.HttpProvider("localhost:8545"));
+          else // production
+            web3 = new Web3(new Web3.providers.HttpProvider(config.env.API_KEY));
+        }
+
         const accounts = await window.ethereum.request({
           method: "eth_requestAccounts",
         });
@@ -77,9 +85,8 @@ function App() {
   </div>
   }
 
-
   return (
-    <Router>
+    <Router basename = {"/BlockChain-Course-APP"}>
       <div>
         <Navbar />
         <Switch>
