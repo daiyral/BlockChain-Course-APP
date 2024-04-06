@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/BlockChain-Course-APP/static/css/main.659314e8.css",
-    "main.js": "/BlockChain-Course-APP/static/js/main.d8ed1060.js",
+    "main.js": "/BlockChain-Course-APP/static/js/main.d4be655f.js",
     "index.html": "/BlockChain-Course-APP/index.html",
     "main.659314e8.css.map": "/BlockChain-Course-APP/static/css/main.659314e8.css.map",
-    "main.d8ed1060.js.map": "/BlockChain-Course-APP/static/js/main.d8ed1060.js.map"
+    "main.d4be655f.js.map": "/BlockChain-Course-APP/static/js/main.d4be655f.js.map"
   },
   "entrypoints": [
     "static/css/main.659314e8.css",
-    "static/js/main.d8ed1060.js"
+    "static/js/main.d4be655f.js"
   ]
 }
