@@ -1,6 +1,7 @@
 # Voting app
 Decentralised voting system based on etherum. 
 Using metamask, truffle, ganache.
+Front end using react with fluent UI
 Contract also deployed on sepolia network. If you have sepolia it can also be used.
 
 ## System Workflow
