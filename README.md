@@ -75,17 +75,26 @@ Contract also deployed on sepolia network. If you have sepolia it can also be us
 
 ### Deploy for sepolia testnet
 
-9. Deploy smart contract to sepolia blockchain (MUST HAVE SEPOLIA ETH)
+1. Deploy smart contract to sepolia blockchain (MUST HAVE SEPOLIA ETH)
     
   ``` shell
   truffle migrate --network sepolia.
 ```
   
-11. Deploy to git pages the react client
+2. Deploy to git pages the react client (Only if you wish to push a new version)
     
    ```shell
    cd client
    npm run deploy
-  ```
+```
+3. Go to https://daiyral.github.io/BlockChain-Course-APP/
+4. Must be connected to sepolia testnet in metamask
 
-12. Go to https://daiyral.github.io/BlockChain-Course-APP/
+   ```shell
+      Network name = Sepolia test network
+      New RPC URL = https://sepolia.infura.io/v3/
+      Chain ID = 11155111
+      Currency symbol = SepoliaETH
+      Block explorer URL (Optional) = https://sepolia.etherscan.io
+  ```
+5. First account in metamask is the admin, other accounts are users
