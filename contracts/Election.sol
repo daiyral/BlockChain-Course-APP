@@ -65,6 +65,9 @@ contract Election {
         for (uint i = 0; i < candidateCount; i++) {
             delete candidateDetails[i];
         }
+        for (uint i = 0; i < voters.length; i++) {
+            delete voterDetails[voters[i]];
+        }
         candidateCount = 0;
         voterCount = 0;
         electionDetails = ElectionDetails(

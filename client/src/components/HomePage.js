@@ -69,6 +69,8 @@ function HomePage({isAdmin, account, web3, contractInstance}) {
       const { adminName,electionName  } = await contractInstance.methods.getElectionDetails().call();
       const totalCandidates = await contractInstance.methods.getTotalCandidate().call();
       const totalVoters = await contractInstance.methods.getTotalVoter().call();
+      const voter = await contractInstance.methods.voterDetails(account).call().catch((error) => console.error('Error checking registration status:', error));
+      setVoter({ ...voter})
       getAllCandidates(totalCandidates);
       setElectionStats({
         electionName,
@@ -110,8 +112,9 @@ function HomePage({isAdmin, account, web3, contractInstance}) {
 
   const handleVote = async (candidateId) => {
     try {
-      await contractInstance.methods.vote(candidateId).send({ from: account }).catch((error) => console.error('Error voting:', error));
-      setVoter({ ...voter, hasVoted: true })
+      await contractInstance.methods.vote(candidateId-1).send({ from: account }).catch((error) => console.error('Error voting:', error));
+      const voter = await contractInstance.methods.voterDetails(account).call().catch((error) => console.error('Error checking registration status:', error));
+      setVoter({ ...voter})
     } catch (error) {
       console.error('Error voting', error);
     }
@@ -141,7 +144,6 @@ function HomePage({isAdmin, account, web3, contractInstance}) {
                 <div>
                     <h2>Election Name: {electionStats.electionName}</h2>
                     <h2>Total Candidates: {electionStats.totalCandidates}</h2>
-                    <h2>Total Voters Registered: {electionStats.totalVoters}</h2>
                     {candidates.map(candidate => (
                         <div style={{ marginBottom: '5px' }}>
                             <div style={{ display: 'flex', justifyContent: 'start' }}>
