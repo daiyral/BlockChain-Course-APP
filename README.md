@@ -85,7 +85,7 @@ Deployed at : https://daiyral.github.io/BlockChain-Course-APP/
   ```
 
 ### Deploy for sepolia testnet
-
+0. Create .env file and input API key and mnemonic. (view truffle.config.js to see what paramaters are needed)
 1. Deploy smart contract to sepolia blockchain (MUST HAVE SEPOLIA ETH)
     
   ``` shell
