@@ -4,6 +4,16 @@ Using metamask, truffle, ganache.
 Front end using react with fluent UI
 Contract also deployed on sepolia network. If you have sepolia it can also be used.
 
+To view and use the app deployed at github must be connected to the following network in metamask:
+
+Network name = Sepolia test network
+New RPC URL = https://sepolia.infura.io/v3/
+Chain ID = 11155111
+Currency symbol = SepoliaETH
+Block explorer URL (Optional) = https://sepolia.etherscan.io
+
+Deployed at : daiyral.github.io/BlockChain-Course-APP/
+
 ## System Workflow
 - Admin account will create an election with the candidates for the election.
 - Voter accounts will register their account to be eligable to vote
