@@ -12,7 +12,7 @@ Chain ID = 11155111
 Currency symbol = SepoliaETH
 Block explorer URL (Optional) = https://sepolia.etherscan.io
 
-Deployed at : daiyral.github.io/BlockChain-Course-APP/
+Deployed at : https://daiyral.github.io/BlockChain-Course-APP/
 
 ## System Workflow
 - Admin account will create an election with the candidates for the election.
